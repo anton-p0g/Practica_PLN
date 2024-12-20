@@ -74,6 +74,7 @@ n_tokens_summary <- sapply(lista_summary, function(x) {
 Lo mostramos en histogramas los valores de titulo y summary.
 
 ```{r}
+par(oma = c(0, 0, 1, 0)) # Increase the top outer margin (third value)
 layout(matrix(1:2, nrow = 1, ncol = 2))
 hist(n_tokens_titulos,
   breaks = seq(0, 50, 1), ylim = c(0, 3500), main = "Histograma titulos", col = "blue",
@@ -83,6 +84,7 @@ hist(n_tokens_summary,
   breaks = seq(0, 180, 2), ylim = c(0, 3500), main = "Histograma summary", col = "red",
   border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
 )
+mtext("Resultados con SpacyR", side = 3, outer = TRUE, line = -1, cex = 1.5)
 ```
 
 Ahora usaremos udpipe para hacer lo mismo. Para evitar problemas tiempo (se tarda 30 min!) lo ejecutamos una vez para tener el dataframe de los tokens parseados y los guardamos en un fichero rds.
@@ -132,6 +134,7 @@ n_tokens_summary_udpipe <- sapply(lista_summary_udpipe, function(x) {
 Lo mostramos en histogramas los valores de titulo y summary en udpipe
 
 ```{r}
+par(oma = c(0, 0, 1, 0)) # Increase the top outer margin (third value)
 layout(matrix(1:2, nrow = 1, ncol = 2))
 hist(n_tokens_titulos_udpipe,
   breaks = seq(0, 50, 1), ylim = c(0, 3500), main = "Histograma titulo", col = "blue",
@@ -141,4 +144,5 @@ hist(n_tokens_summary_udpipe,
   breaks = seq(0, 180, 2), ylim = c(0, 3500), main = "Histograma summary", col = "red",
   border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
 )
+mtext("Resultados con udpipe", side = 3, outer = TRUE, line = -1, cex = 1.5)
 ```

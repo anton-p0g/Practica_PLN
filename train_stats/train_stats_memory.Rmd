@@ -27,12 +27,16 @@ Creamos histogramas para visualizar la distribución del número de tokens en lo
 - Los histogramas de los títulos mostraron la mayoría de los documentos con menos de 50 tokens.
 - Los histogramas de los resúmenes mostraron una mayor diversidad, con la mayoría de los documentos teniendo menos de 180 tokens.
 
-```r
+```{r}
 layout(matrix(1:2, nrow = 1, ncol = 2))
-hist(n_tokens_titulos, breaks = seq(0,50,1), ylim = c(0,3500), main = "Histograma títulos", col = "blue", 
-     border = "white", xlab = "Número de tokens", ylab = "Frecuencia")
-hist(n_tokens_summary, breaks = seq(0,180,2), ylim = c(0,3500), main = "Histograma resúmenes", col = "red",
-     border = "white", xlab = "Número de tokens", ylab = "Frecuencia")
+hist(n_tokens_titulos,
+     breaks = seq(0, 50, 1), ylim = c(0, 3500), main = "Histograma títulos", col = "blue",
+     border = "white", xlab = "Número de tokens", ylab = "Frecuencia"
+)
+hist(n_tokens_summary,
+     breaks = seq(0, 180, 2), ylim = c(0, 3500), main = "Histograma resúmenes", col = "red",
+     border = "white", xlab = "Número de tokens", ylab = "Frecuencia"
+)
 ```
 
 ## Procesamiento con UDPipe
@@ -42,7 +46,7 @@ Para complementar el análisis, utilizamos `udpipe` para realizar un análisis g
 2. Guardar los resultados en ficheros para optimizar el tiempo de procesamiento.
 3. Limpiar los datos eliminando puntuación y manteniendo solo los lemas relevantes.
 
-```r
+```{r}
 saveRDS(data_frame_titulos_udpipe, "data_frame_titulos_udpipe.rds")
 data_frame_titulos_udpipe <- readRDS("data_frame_titulos_udpipe.rds")
 ```
@@ -50,7 +54,10 @@ data_frame_titulos_udpipe <- readRDS("data_frame_titulos_udpipe.rds")
 ## Comparación de Resultados
 Se utilizó la misma función para agrupar y contar los tokens en los datos procesados con `udpipe`. Finalmente, generamos histogramas para comparar la distribución de tokens en los títulos y resúmenes utilizando ambas herramientas.
 
-- Las distribuciones fueron similares a las obtenidas con `spacy`, confirmando la consistencia en el procesamiento.
+![Histograma de títulos y resúmenes con SpacyR](spacy_hist.png)
+![Histograma de títulos y resúmenes con UDPipe](udpipe_hist.png)
+
+Como podemos ver, ambos histogramas son casi idénticos. Así, confirmamos que los resultados obtenidos con `udpipe` son consistentes con los obtenidos previamente con `spacy`.
 
 ## Problemas que Tuvimos
 El principal inconveniente encontrado fue el tiempo de procesamiento de `udpipe`. Anotar los títulos y resúmenes del corpus tomó aproximadamente 30 minutos. Para mitigar este problema, guardamos los resultados procesados en ficheros RDS. Esto nos permitió cargar los datos rápidamente en ejecuciones futuras, reduciendo significativamente el tiempo requerido.
