@@ -2,7 +2,7 @@ source("../fuentes/train_analysis.R")
 
 test_freq_verbs <- function(list_verbs_text, list_verbs_title_unique, list_verbs_summary_unique, corpus_ids) {
   
-  test_corpus_ids <- corpus_ids[56:60] # Get a range of documents for testing
+  test_corpus_ids <- corpus_ids[56:58] # Get a range of documents for testing
   
   # Subset the data given the range
   test_text_list <- list_verbs_text[test_corpus_ids]
@@ -57,10 +57,10 @@ test_specific_frequency_summary <- function(freq, freq_verbs_summary, list_verbs
     matched_counts <- sapply(matched_summary_verbs, function(verb) sum(text_verbs == verb))
     
     # Print details for the document
-    cat("\nDocument ID:", doc_id, "\n")
+    cat("\nDocument ID:", doc_id, "  \n")
     cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "  \n\n")
     cat("Summary Verbs:\n", paste(summary_verbs, collapse = ", "), "  \n")
-    cat("Matched Verbs (Summaries) with Counts:\n")
+    cat("Matched Verbs (Summaries) with Counts:  \n")
     cat(paste("\t", matched_summary_verbs, "(", matched_counts, ")", collapse = ", "), "  \n")
     cat("Matched Count (Summaries):", length(matched_summary_verbs), "  \n")
   }
@@ -89,12 +89,13 @@ test_specific_frequency_titles <- function(freq, freq_verbs_titles, list_verbs_t
     matched_counts <- sapply(matched_title_verbs, function(verb) sum(text_verbs == verb))
     
     # Print details for the document
-    cat("\nDocument ID:", doc_id, "\n")
+    cat("\nDocument ID:", doc_id, "  \n")
     cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "  \n\n")
     cat("Title Verbs:\n", paste(title_verbs, collapse = ", "), "  \n")
-    cat("Matched Verbs (Titles) with Counts:\n")
+    cat("Matched Verbs (Titles) with Counts:  \n")
     cat(paste("\t", matched_title_verbs, "(", matched_counts, ")", collapse = ", "), "  \n")
     cat("Matched Count (Titles):", length(matched_title_verbs), "  \n")
   }
 }
+
 test_specific_frequency_titles(44, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids)

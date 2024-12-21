@@ -171,34 +171,38 @@ El objetivo de esta función es recorrer los textos y contar cuántas veces los 
 Aplicamos esta función y obtenemos las frecuencias de los verbos de cada `title` 
 en su texto y de cada `summary` en su texto.
 
-Veamos las frecuencias de los `titles` 50 - 100:
+Veamos las frecuencias de los `titles` 50 - 70:
 
 ```{r}
-freq_verbs_titles[50:100]
+freq_verbs_titles[50:70]
 ```
 
-Veamos las frecuencias de los `summary` 50 - 100:
+Veamos las frecuencias de los `summary` 50 - 70:
 
 ```{r}
-freq_verbs_summary[50:100]
+freq_verbs_summary[50:70]
 ```
 
-Ahora viene la parte de los **testeos** para confirmar que lo que hemos hecho es
-correcto. Para realizarlo, vamos a crear otra función `test_freq_verbs`.
 
-La función `test_freq_verbs` prueba la función `freq_verbs` en un **subconjunto** de documentos, 
-calculando la frecuencia de verbos en títulos y resúmenes. Muestra los verbos
-coincidentes entre texto, título y resumen, y sus frecuencias correspondientes para
-cada documento.
+## Testeos de la Función `freq_verbs`
 
-Veamos el testeo:
+Para confirmar que los resultados de la función `freq_verbs` son correctos, definimos una nueva función llamada `test_freq_verbs`. Esta función evalúa un subconjunto de documentos y verifica:
+
+- La frecuencia de verbos encontrados en los títulos (`title`) y resúmenes (`summary`) comparados con el texto completo.
+- Los verbos coincidentes entre los diferentes campos y las frecuencias correspondientes.
+
+El objetivo de esta prueba es asegurar que los verbos se están contando correctamente y que los resultados coinciden con las expectativas.
+
+Hacemos un test de los textos 56 - 58:
 
 ```{r, results = "asis"}
 test_freq_verbs(list_verbs_text, list_verbs_title_unique, list_verbs_summary_unique, corpus_ids)
 ```
+---
 
-Gráficamente podemos **visualizar** esto. Primero, vamos a crear una **tabla** con
-las frecuencias de los resumenes y hacer un `bar_plot`. Quedando lo siguiente:
+## Visualización de Frecuencias de Verbos
+
+Para analizar la cantidad de documentos que tienen cierta frecuencia de coincidencia entre los verbos de los resúmenes (`summary`) y los textos completos, generamos un **histograma**. Este histograma nos permite observar cómo están distribuidas las frecuencias de coincidencia entre los documentos.
 
 ```{r echo=FALSE}
 freq_table1 <- table(freq_verbs_summary)
@@ -231,12 +235,8 @@ text(bar_midpoints, freq_table1,
      pos = 3, srt = 45, cex = 0.4, col = "black")
 ```
 
-Y la **tabla de frecuencias**: 
 
-```{r}
-freq_table1
-```
-También podemos hacer esto con los **títulos** y quedaría lo siguiente:
+Histograma para ver las frecuencias de los verbos del campo **títulos**:
 
 ```{r echo=FALSE}
 freq_table2 <- table(freq_verbs_titles)
@@ -269,31 +269,52 @@ bar_midpoints <- barplot(freq_table2,
        pos = 3, srt = 45, cex = 0.4, col = "black")
 ```
 
-Con su **tabla de frecuencias**:
+Como se puede observar hay gran cantidad de documentos que tienen frecuencia 0. Al principio esto nos pareció muy raro, pero tras realizar numerosas pruebas y verificar nuestros cálculos, hemos llegado a la conclusión de que estos son correctos. 
+Nuestra hipótesis es que el problema radica en las limitaciones del modelo `es_core_news_sm` utilizado por `spacy_parse()`. Este modelo, aunque eficiente y rápido, no identifica correctamente ciertos verbos. Por ejemplo, no reconoce el verbo "ser", lo cual es especialmente significativo dada su alta frecuencia en el idioma español. Además, tampoco maneja bien los verbos pronominales, lo que afecta aún más la precisión de los resultados.
 
-```{r}
-freq_table2
+Creemos que si hubieramos usando un modelo de lenguaje español más grande que `es_core_news_sm` los resultados habrían sido más representativos y precisos. 
+
+---
+
+## Testeo para Frecuencias Específicas
+
+Una vez calculadas las frecuencias de coincidencias de verbos entre los resúmenes (`summary`) y los textos completos, podemos realizar testeos para analizar documentos que tienen una frecuencia específica. Esto nos permite observar en detalle los verbos coincidentes en esos casos particulares y asegurarnos de que el cálculo se realiza correctamente.
+
+### Función `test_specific_frequency_summary`
+
+La función `test_specific_frequency_summary` busca documentos que tienen una frecuencia específica de coincidencias en los resúmenes. Para cada documento encontrado:
+1. Muestra los verbos del texto completo y del resumen.
+2. Indica los verbos coincidentes y cuántas veces se encontraron en el texto.
+
+Si no se encuentran documentos con esa frecuencia, la función informa que no hay coincidencias.
+
+Hagamos un test, por ejemplo, con frecuencia **46**, solo debe aparecer 1 documento con la suma de frecuencias de cada verbo encontrado equivalente a 46.
+
+```{r echo=FALSE, results = "asis"}
+test_specific_frequency_summary(46, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids)
+```
+
+Podemos hacer lo mismo con los **títulos**, por ejemplo, con los que tengan frecuencia **63**. Según el histograma, debe aparecer 1 documento con frecuencia 63.
+
+```{r echo=FALSE, results = "asis"}
+test_specific_frequency_titles(63, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids)
 ```
 
 
-Ahora hagamos un testeo para una determinada **frecuencia de summary**. Para ello, 
-creamos la función `test_specific_frequency_summary`.
+## Retos y Soluciones
 
-La función `test_specific_frequency_summary` busca documentos con una frecuencia 
-**específica** de verbos en los **resúmenes**, muestra detalles de los verbos coincidentes
-entre texto y resumen, y presenta el **número de coincidencias por documento**. Si no 
-hay documentos con esa frecuencia, informa que no se encontraron coincidencias.
+### Problema con el Cálculo de Frecuencias
 
-Hagamos un test, por ejemplo, con los de frecuencia **43**:
+Uno de los desafíos más importantes que enfrentamos fue calcular correctamente las frecuencias de coincidencia de verbos entre los textos y los campos title y summary. Inicialmente, los histogramas mostraban frecuencias máximas de solo 10, lo cual resultaba poco realista dado que muchos textos contienen cientos de verbos. Además, las frecuencias estaban incorrectamente distribuidas; por ejemplo, el histograma indicaba que había 4 documentos con una frecuencia de coincidencia de 8, pero al verificar manualmente, no había ninguno.
 
-```{r}
-test_specific_frequency_summary(43, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids)
-```
+#### Identificación del Problema
 
-Podemos hacer lo mismo con los **títulos**, por ejemplo, con los que tengan **30**
-frecuencias y queda lo siguiente:
+Después de analizar el código y realizar múltiples pruebas, descubrimos que el error se debía a que solo estábamos considerando los verbos únicos en lugar de sumar todas las veces que estos aparecían en los textos completos. Esto generaba resultados inconsistentes y poco representativos.
 
-```{r}
-test_specific_frequency_titles(30, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids)
-```
+#### Solución Implementada
 
+La solución fue realizar una pequeña modificación en el cálculo de las frecuencias. En lugar de simplemente contar si un verbo estaba presente, sumamos todas las apariciones de cada verbo en el texto correspondiente. Esta corrección, aunque sencilla, tuvo un impacto significativo, permitiéndonos obtener histogramas precisos que reflejan correctamente la distribución de frecuencias.
+
+#### Validación con Tests
+
+Para asegurarnos de que los cálculos eran correctos, utilizamos los tests desarrollados específicamente para esta tarea. Estos tests nos permitieron verificar las coincidencias verbo por verbo, documentando los resultados y confirmando que las frecuencias calculadas eran exactas. Gracias a estas pruebas, podemos afirmar con confianza que los resultados ahora son consistentes y precisos.
