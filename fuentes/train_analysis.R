@@ -1,11 +1,11 @@
 library(quanteda)
 library(spacyr)
 
-corps = readRDS("../datos/spanish_train.qcorpus.rds")
+corps = readRDS("datos/spanish_train.qcorpus.rds")
 spacy_initialize("es_core_news_sm")
 
 
-file_path <- "../datos/words_title.rds"
+file_path <- "datos/words_title.rds"
 
 if (file.exists(file_path)) {
   words_title <- readRDS(file_path)
@@ -19,7 +19,7 @@ verbs_title <- words_title[words_title$pos == "VERB", c("doc_id", "lemma")]
 head(verbs_title)
 
 
-file_path <- "../datos/words_summary.rds"
+file_path <- "datos/words_summary.rds"
 if (file.exists(file_path)) {
   words_summary <- readRDS(file_path)
   cat("File exists. Loaded words_summary from", file_path, "  \n")
@@ -32,8 +32,8 @@ verbs_summary <- words_summary[words_summary$pos == "VERB", c("doc_id", "lemma")
 head(verbs_summary)
 
 
-file_path_verbs <- "../datos/verbs_text.rds"
-file_path_words <- "../datos/words_text.rds"
+file_path_verbs <- "datos/verbs_text.rds"
+file_path_words <- "datos/words_text.rds"
 
 if (file.exists(file_path_verbs)) {
   verbs_text <- readRDS(file_path_verbs)
@@ -78,8 +78,8 @@ verbs_create_list <- function(df, corpus_ids){
 }
 
 
-file_path_list_verbs_titles <- "../datos/list_verbs_titles.rds"
-file_path_list_verbs_summary <- "../datos/list_verbs_summary.rds"
+file_path_list_verbs_titles <- "datos/list_verbs_titles.rds"
+file_path_list_verbs_summary <- "datos/list_verbs_summary.rds"
 
 if (file.exists(file_path_list_verbs_titles)) {
   list_verbs_titles <- readRDS(file_path_list_verbs_titles)
@@ -104,7 +104,7 @@ head(list_verbs_titles)
 head(list_verbs_summary)
 
 
-file_path_list_verbs_text <- "../datos/list_verbs_text.rds"
+file_path_list_verbs_text <- "datos/list_verbs_text.rds"
 if (file.exists(file_path_list_verbs_text)) {
   list_verbs_text <- readRDS(file_path_list_verbs_text)
   cat("File exists. Loaded list_verbs_text from", file_path_list_verbs_text, "  \n")
