@@ -1,6 +1,4 @@
-source("train_analysis.R")
-
-
+source("../fuentes/train_analysis.R")
 
 test_freq_verbs <- function(list_verbs_text, list_verbs_title_unique, list_verbs_summary_unique, corpus_ids) {
   
