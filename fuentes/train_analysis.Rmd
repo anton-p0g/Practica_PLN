@@ -12,13 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(quanteda)
 library(spacyr)
 
-corps = readRDS("spanish_train.qcorpus.rds")
+corps = readRDS("../datos/spanish_train.qcorpus.rds")
 spacy_initialize("es_core_news_sm")
 
 ```
 
 ```{r}
-file_path <- "RDS/words_title.rds"
+file_path <- "../datos/words_title.rds"
 
 if (file.exists(file_path)) {
   words_title <- readRDS(file_path)
@@ -34,7 +34,7 @@ head(verbs_title)
 ```
 
 ```{r}
-file_path <- "RDS/words_summary.rds"
+file_path <- "../datos/words_summary.rds"
 
 if (file.exists(file_path)) {
   words_summary <- readRDS(file_path)
@@ -51,8 +51,8 @@ head(verbs_summary)
 
 ```{r}
 
-file_path_verbs <- "RDS/verbs_text.rds"
-file_path_words <- "RDS/words_text.rds"
+file_path_verbs <- "../datos/verbs_text.rds"
+file_path_words <- "../datos/words_text.rds"
 
 if (file.exists(file_path_verbs)) {
   verbs_text <- readRDS(file_path_verbs)
@@ -101,8 +101,8 @@ verbs_create_list <- function(df, corpus_ids){
 
 
 ```{r}
-file_path_list_verbs_titles <- "RDS/list_verbs_titles.rds"
-file_path_list_verbs_summary <- "RDS/list_verbs_summary.rds"
+file_path_list_verbs_titles <- "../datos/list_verbs_titles.rds"
+file_path_list_verbs_summary <- "../datos/list_verbs_summary.rds"
 
 if (file.exists(file_path_list_verbs_titles)) {
   list_verbs_titles <- readRDS(file_path_list_verbs_titles)
@@ -130,7 +130,7 @@ head(list_verbs_summary)
 
 ```{r}
 
-file_path_list_verbs_text <- "RDS/list_verbs_text.rds"
+file_path_list_verbs_text <- "../datos/list_verbs_text.rds"
 
 if (file.exists(file_path_list_verbs_text)) {
   list_verbs_text <- readRDS(file_path_list_verbs_text)
@@ -377,6 +377,7 @@ test_specific_frequency_titles <- function(freq, freq_verbs_titles, list_verbs_t
 }
 test_specific_frequency_titles(44, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids)
 ```
+
 ```{r}
 test_specific_frequency_titles(30, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids)
 ```

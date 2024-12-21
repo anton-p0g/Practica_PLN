@@ -1,43 +1,43 @@
 library(quanteda)
 library(spacyr)
 
-corps = readRDS("spanish_train.qcorpus.rds")
+corps = readRDS("../datos/spanish_train.qcorpus.rds")
 spacy_initialize("es_core_news_sm")
 
 
-file_path <- "RDS/words_title.rds"
+file_path <- "../datos/words_title.rds"
 
 if (file.exists(file_path)) {
   words_title <- readRDS(file_path)
-  cat("File exists. Loaded words_title from", file_path, "\n")
+  cat("File exists. Loaded words_title from", file_path, "  \n")
 } else {
   words_title <- spacy_parse(corps$title)
   saveRDS(words_title, file_path)
-  cat("File not found. Parsed words_title using spacy_parse and saved to", file_path, "\n")
+  cat("File not found. Parsed words_title using spacy_parse and saved to", file_path, "  \n")
 }
 verbs_title <- words_title[words_title$pos == "VERB", c("doc_id", "lemma")]
 head(verbs_title)
 
 
-file_path <- "RDS/words_summary.rds"
+file_path <- "../datos/words_summary.rds"
 if (file.exists(file_path)) {
   words_summary <- readRDS(file_path)
-  cat("File exists. Loaded words_summary from", file_path, "\n")
+  cat("File exists. Loaded words_summary from", file_path, "  \n")
 } else {
   words_summary <- spacy_parse(corps$summary)
   saveRDS(words_summary, file_path)
-  cat("File not found. Parsed words_summary using spacy_parse and saved to", file_path, "\n")
+  cat("File not found. Parsed words_summary using spacy_parse and saved to", file_path, "  \n")
 }
 verbs_summary <- words_summary[words_summary$pos == "VERB", c("doc_id", "lemma")]
 head(verbs_summary)
 
 
-file_path_verbs <- "RDS/verbs_text.rds"
-file_path_words <- "RDS/words_text.rds"
+file_path_verbs <- "../datos/verbs_text.rds"
+file_path_words <- "../datos/words_text.rds"
 
 if (file.exists(file_path_verbs)) {
   verbs_text <- readRDS(file_path_verbs)
-  cat("File exists. Loaded verbs_text from", file_path_verbs, "\n")
+  cat("File exists. Loaded verbs_text from", file_path_verbs, "  \n")
 } else {
   # If verbs_text doesn't exist, check if words_text exists
   
@@ -45,14 +45,14 @@ if (file.exists(file_path_verbs)) {
     words_text <- readRDS(file_path_words)
     verbs_text <- words_text[words_text$pos == "VERB", c("doc_id", "lemma")]
     saveRDS(verbs_text, file_path_verbs) # Save verbs_text for future use
-    cat("File not found for verbs_text. Extracted verbs_text from words_text and saved to", file_path_verbs, "\n")
+    cat("File not found for verbs_text. Extracted verbs_text from words_text and saved to", file_path_verbs, "  \n")
     
   } else {
     words_text <- spacy_parse(corps)
     saveRDS(words_text, file_path_words) # Save words_text for future use
     verbs_text <- words_text[words_text$pos == "VERB", c("doc_id", "lemma")]
     saveRDS(verbs_text, file_path_verbs) # Save verbs_text for future use
-    cat("File not found for words_text. Parsed words_text with spacy_parse, extracted verbs_text, and saved to", file_path_words, "and", file_path_verbs, "\n")
+    cat("File not found for words_text. Parsed words_text with spacy_parse, extracted verbs_text, and saved to", file_path_words, "and", file_path_verbs, "  \n")
   }
 }
 head(verbs_text)
@@ -78,41 +78,41 @@ verbs_create_list <- function(df, corpus_ids){
 }
 
 
-file_path_list_verbs_titles <- "RDS/list_verbs_titles.rds"
-file_path_list_verbs_summary <- "RDS/list_verbs_summary.rds"
+file_path_list_verbs_titles <- "../datos/list_verbs_titles.rds"
+file_path_list_verbs_summary <- "../datos/list_verbs_summary.rds"
 
 if (file.exists(file_path_list_verbs_titles)) {
   list_verbs_titles <- readRDS(file_path_list_verbs_titles)
-  cat("File exists. Loaded list_verbs_titles from", file_path_list_verbs_titles, "\n")
+  cat("File exists. Loaded list_verbs_titles from", file_path_list_verbs_titles, "  \n")
   
 } else {
   list_verbs_titles <- verbs_create_list(verbs_title, corpus_ids)
   saveRDS(list_verbs_titles, file_path_list_verbs_titles)
-  cat("File not found. Created list_verbs_titles and saved to", file_path_list_verbs_titles, "\n")
+  cat("File not found. Created list_verbs_titles and saved to", file_path_list_verbs_titles, "  \n")
 }
 
 if (file.exists(file_path_list_verbs_summary)) {
   list_verbs_summary <- readRDS(file_path_list_verbs_summary)
-  cat("File exists. Loaded list_verbs_summary from", file_path_list_verbs_summary, "\n")
+  cat("File exists. Loaded list_verbs_summary from", file_path_list_verbs_summary, "  \n")
   
 } else {
   list_verbs_summary <- verbs_create_list(verbs_summary, corpus_ids)
   saveRDS(list_verbs_summary, file_path_list_verbs_summary)
-  cat("File not found. Created list_verbs_summary and saved to", file_path_list_verbs_summary, "\n")
+  cat("File not found. Created list_verbs_summary and saved to", file_path_list_verbs_summary, "  \n")
 }
 head(list_verbs_titles)
 head(list_verbs_summary)
 
 
-file_path_list_verbs_text <- "RDS/list_verbs_text.rds"
+file_path_list_verbs_text <- "../datos/list_verbs_text.rds"
 if (file.exists(file_path_list_verbs_text)) {
   list_verbs_text <- readRDS(file_path_list_verbs_text)
-  cat("File exists. Loaded list_verbs_text from", file_path_list_verbs_text, "\n")
+  cat("File exists. Loaded list_verbs_text from", file_path_list_verbs_text, "  \n")
   
 } else {
   list_verbs_text <- verbs_create_list(verbs_text, corpus_ids)
   saveRDS(list_verbs_text, file_path_list_verbs_text)
-  cat("File not found. Created list_verbs_text and saved to", file_path_list_verbs_text, "\n")
+  cat("File not found. Created list_verbs_text and saved to", file_path_list_verbs_text, "  \n")
 }
 head(list_verbs_text)
 
@@ -151,11 +151,6 @@ freq_verbs_titles <- freq_verbs(list_verbs_text, list_verbs_title_unique, corpus
 freq_verbs_summary <- freq_verbs(list_verbs_text, list_verbs_summary_unique, corpus_ids)
 freq_verbs_titles[50:100]
 freq_verbs_summary[50:100]
-
-
-
-
-
 
 
 freq_table1 <- table(freq_verbs_summary)
@@ -198,12 +193,12 @@ test_specific_frequency_summary <- function(freq, freq_verbs_summary, list_verbs
   
   # In case no documents match
   if (length(matching_docs) == 0) {
-    cat("No documents found with frequency:", freq, "\n")
+    cat("No documents found with frequency:", freq, "  \n")
     return(NULL)
   }
   
   # Iterate through matching documents and print details
-  cat("\n=== Testing for Frequency:", freq, "===\n")
+  cat("\n=== Testing for Frequency:", freq, "===  \n")
   for (doc_id in matching_docs) {
     text_verbs <- list_verbs_text[[doc_id]]
     summary_verbs <- list_verbs_summary_unique[[doc_id]]
@@ -214,11 +209,11 @@ test_specific_frequency_summary <- function(freq, freq_verbs_summary, list_verbs
     
     # Print details for the document
     cat("\nDocument ID:", doc_id, "\n")
-    cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "\n\n")
-    cat("Summary Verbs:\n", paste(summary_verbs, collapse = ", "), "\n")
+    cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "  \n\n")
+    cat("Summary Verbs:\n", paste(summary_verbs, collapse = ", "), "  \n")
     cat("Matched Verbs (Summaries) with Counts:\n")
-    cat(paste("\t", matched_summary_verbs, "(", matched_counts, ")", collapse = ", "), "\n")
-    cat("Matched Count (Summaries):", length(matched_summary_verbs), "\n")
+    cat(paste("\t", matched_summary_verbs, "(", matched_counts, ")", collapse = ", "), "  \n")
+    cat("Matched Count (Summaries):", length(matched_summary_verbs), "  \n")
   }
 }
 test_specific_frequency_summary(108, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids)

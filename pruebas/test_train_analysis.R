@@ -1,6 +1,4 @@
-source("train_analysis.R")
-
-
+source("../fuentes/train_analysis.R")
 
 test_freq_verbs <- function(list_verbs_text, list_verbs_title_unique, list_verbs_summary_unique, corpus_ids) {
   
@@ -14,24 +12,24 @@ test_freq_verbs <- function(list_verbs_text, list_verbs_title_unique, list_verbs
   # Call the freq_verbs function on the new lists
   test_freq_titles <- freq_verbs(test_text_list, test_title_list, test_corpus_ids)
   test_freq_summary <- freq_verbs(test_text_list, test_summary_list, test_corpus_ids)
-  
-  cat("\n------ Testing freq_verbs Function ------\n\n")
+   
+  cat("\n------ Testing freq_verbs Function ------  \n\n")
   
   for (i in seq_along(test_corpus_ids)) {
     
-    cat("Document ID:", test_corpus_ids[i], "\n")
-    cat("Text Verbs:", test_text_list[[i]], "\n\n")
+    cat("Document ID:", test_corpus_ids[i], "  \n")
+    cat("Text Verbs:", test_text_list[[i]], "  \n\n")
     
     matched_title_verbs <- intersect(test_text_list[[i]], test_title_list[[i]])
     
-    cat("Title Verbs:", test_title_list[[i]], "\n")
-    cat("Matched Title Verbs:\n", paste(matched_title_verbs, collapse = ", "), "\n")
+    cat("Title Verbs:", test_title_list[[i]], "  \n")
+    cat("Matched Title Verbs:\n", paste(matched_title_verbs, collapse = ", "), "  \n")
     
     matched_summary_verbs <- intersect(test_text_list[[i]], test_summary_list[[i]])
     
     cat("Matched Count (Titles):", test_freq_titles[i], "\n\n")
-    cat("Matched Verbs:\n", paste(matched_summary_verbs, collapse = ", "), "\n")
-    cat("Matched Count (Summaries):", test_freq_summary[i], "\n\n")
+    cat("Matched Verbs:\n", paste(matched_summary_verbs, collapse = ", "), "  \n")
+    cat("Matched Count (Summaries):", test_freq_summary[i], "  \n\n")
   }
 }
 
@@ -44,12 +42,12 @@ test_specific_frequency_summary <- function(freq, freq_verbs_summary, list_verbs
   
   # In case no documents match
   if (length(matching_docs) == 0) {
-    cat("No documents found with frequency:", freq, "\n")
+    cat("No documents found with frequency:", freq, "  \n")
     return(NULL)
   }
   
   # Iterate through matching documents and print details
-  cat("\n=== Testing for Frequency:", freq, "===\n")
+  cat("\n=== Testing for Frequency:", freq, "===  \n")
   for (doc_id in matching_docs) {
     text_verbs <- list_verbs_text[[doc_id]]
     summary_verbs <- list_verbs_summary_unique[[doc_id]]
@@ -60,11 +58,11 @@ test_specific_frequency_summary <- function(freq, freq_verbs_summary, list_verbs
     
     # Print details for the document
     cat("\nDocument ID:", doc_id, "\n")
-    cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "\n\n")
-    cat("Summary Verbs:\n", paste(summary_verbs, collapse = ", "), "\n")
+    cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "  \n\n")
+    cat("Summary Verbs:\n", paste(summary_verbs, collapse = ", "), "  \n")
     cat("Matched Verbs (Summaries) with Counts:\n")
-    cat(paste("\t", matched_summary_verbs, "(", matched_counts, ")", collapse = ", "), "\n")
-    cat("Matched Count (Summaries):", length(matched_summary_verbs), "\n")
+    cat(paste("\t", matched_summary_verbs, "(", matched_counts, ")", collapse = ", "), "  \n")
+    cat("Matched Count (Summaries):", length(matched_summary_verbs), "  \n")
   }
 }
 test_specific_frequency_summary(108, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids)
@@ -76,12 +74,12 @@ test_specific_frequency_titles <- function(freq, freq_verbs_titles, list_verbs_t
   
   # In case no documents match
   if (length(matching_docs) == 0) {
-    cat("No documents found with frequency:", freq, "\n")
+    cat("No documents found with frequency:", freq, "  \n")
     return(NULL)
   }
   
   # Iterate through matching documents and print details
-  cat("\n=== Testing for Frequency:", freq, "===\n")
+  cat("\n=== Testing for Frequency:", freq, "===  \n")
   for (doc_id in matching_docs) {
     text_verbs <- list_verbs_text[[doc_id]]
     title_verbs <- list_verbs_title_unique[[doc_id]]
@@ -92,11 +90,11 @@ test_specific_frequency_titles <- function(freq, freq_verbs_titles, list_verbs_t
     
     # Print details for the document
     cat("\nDocument ID:", doc_id, "\n")
-    cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "\n\n")
-    cat("Title Verbs:\n", paste(title_verbs, collapse = ", "), "\n")
+    cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "  \n\n")
+    cat("Title Verbs:\n", paste(title_verbs, collapse = ", "), "  \n")
     cat("Matched Verbs (Titles) with Counts:\n")
-    cat(paste("\t", matched_title_verbs, "(", matched_counts, ")", collapse = ", "), "\n")
-    cat("Matched Count (Titles):", length(matched_title_verbs), "\n")
+    cat(paste("\t", matched_title_verbs, "(", matched_counts, ")", collapse = ", "), "  \n")
+    cat("Matched Count (Titles):", length(matched_title_verbs), "  \n")
   }
 }
 test_specific_frequency_titles(44, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids)
