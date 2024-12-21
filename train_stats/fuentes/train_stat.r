@@ -1,45 +1,20 @@
----
-title: "train_stats"
-output: pdf_document
-date: "2024-11-22"
----
-
-Importamos las librerías a utilizar
-
-```{r,warning=FALSE}
 library(spacyr)
 library(quanteda)
 library(udpipe)
-```
 
-Importamos el corpus y establecemos el titulo y summary
+corps <- readRDS("../datos/spanish_train.qcorpus.rds")
+udmodel_es <- udpipe_load_model(file = "../datos/spanish-ancora-ud-2.5-191206.udpipe")
 
-```{r}
-corps <- readRDS("spanish_train.qcorpus.rds")
-udmodel_es <- udpipe_load_model(file = "spanish-ancora-ud-2.5-191206.udpipe")
-```
-
-Empleamos spacy para parsear title y summary
-
-```{r}
 spacy_initialize(model = "es_core_news_sm")
 words_title <- spacy_parse(corps$title)
 words_summary <- spacy_parse(corps$summary)
 spacy_finalize()
-```
 
-Limpiamos los titles y summary para quitar signos de puntuacion y tomar solo doc_id y lemma
-
-```{r}
 words_title_clear <- words_title[words_title$pos != "PUNCT" | -is.na(words_title$lemma), ]
 words_summary_clear <- words_summary[words_summary$pos != "PUNCT" | -is.na(words_summary$lemma), ]
 titulos <- words_title_clear[, c("doc_id", "lemma")]
 summary <- words_summary_clear[, c("doc_id", "lemma")]
-```
 
-Creamos la funcion para agrupar los tokens en listas
-
-```{r}
 lista_agrupada <- function(dataframe_text_lemma) {
   # Verificar si el dataframe está vacío
   if (nrow(dataframe_text_lemma) == 0) {
@@ -62,11 +37,7 @@ lista_agrupada <- function(dataframe_text_lemma) {
   lista_titulos[[titulos_unicos[pos_titulo_unico]]] <- palabras
   return(lista_titulos)
 }
-```
 
-Empleamos la funcion en titulos y summary y los convertimos en verbos
-
-```{r}
 lista_titulos <- lista_agrupada(titulos)
 lista_summary <- lista_agrupada(summary)
 n_tokens_titulos <- sapply(lista_titulos, function(x) {
@@ -75,57 +46,40 @@ n_tokens_titulos <- sapply(lista_titulos, function(x) {
 n_tokens_summary <- sapply(lista_summary, function(x) {
   x
 })
-```
 
-Lo mostramos en histogramas los valores de titulo y summary.
-
-```{r}
 par(oma = c(0, 0, 1, 0)) # Increase the top outer margin (third value)
 layout(matrix(1:2, nrow = 1, ncol = 2))
 hist(n_tokens_titulos,
-  breaks = seq(0, 50, 1), ylim = c(0, 3500), main = "Histograma titulos", col = "blue",
-  border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
+     breaks = seq(0, 50, 1), ylim = c(0, 3500), main = "Histograma titulos", col = "blue",
+     border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
 )
 hist(n_tokens_summary,
-  breaks = seq(0, 180, 2), ylim = c(0, 3500), main = "Histograma summary", col = "red",
-  border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
+     breaks = seq(0, 180, 2), ylim = c(0, 3500), main = "Histograma summary", col = "red",
+     border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
 )
 mtext("Resultados con SpacyR", side = 3, outer = TRUE, line = -1, cex = 1.5)
-```
 
-Ahora usaremos udpipe para hacer lo mismo. Para evitar problemas tiempo (se tarda 30 min!) lo ejecutamos una vez para tener el dataframe de los tokens parseados y los guardamos en un fichero rds.
-
-
-```{r}
-if (file.exists("data_frame_titulos_udpipe.rds")) {
-  df_titulos <- readRDS("data_frame_titulos_udpipe.rds")
+if (file.exists("../datos/data_frame_titulos_udpipe.rds")) {
+  df_titulos <- readRDS("../datos/data_frame_titulos_udpipe.rds")
 } else {
   titulos_con_udpipe <- udpipe_annotate(udmodel_es, corps$title)
   df_titulos <- as.data.frame(titulos_con_udpipe)
-  saveRDS(df_titulos, "data_frame_titulos_udpipe.rds")
+  saveRDS(df_titulos, "../datos/data_frame_titulos_udpipe.rds")
 }
 
-if (file.exists("data_frame_summary_udpipe.rds")) {
-  df_summary <- readRDS("data_frame_summary_udpipe.rds")
+if (file.exists("../datos/data_frame_summary_udpipe.rds")) {
+  df_summary <- readRDS("../datos/data_frame_summary_udpipe.rds")
 } else {
   summary_con_udpipe <- udpipe_annotate(udmodel_es, corps$summary)
   df_summary <- as.data.frame(summary_con_udpipe)
-  saveRDS(df_summary, "data_frame_summary_udpipe.rds")
+  saveRDS(df_summary, "../datos/data_frame_summary_udpipe.rds")
 }
-```
 
-Cargamos los ficheros y los limpiamos al igual que hicimos antes.
-
-```{r}
 df_titulos_clear <- df_titulos[df_titulos$upos != "PUNCT" | -is.na(df_titulos$lemma), ]
 df_summary_clear <- df_summary[df_summary$upos != "PUNCT" | -is.na(df_summary$lemma), ]
 titulos_udpipe <- df_titulos_clear[, c("doc_id", "lemma")]
 summary_udpipe <- df_summary_clear[, c("doc_id", "lemma")]
-```
-
-Empleamos la función realizada antes para limpiar juntarlos en listas
-
-```{r}
+# 
 lista_titulos_udpipe <- lista_agrupada(titulos_udpipe)
 lista_summary_udpipe <- lista_agrupada(summary_udpipe)
 
@@ -135,30 +89,21 @@ n_tokens_titulos_udpipe <- sapply(lista_titulos_udpipe, function(x) {
 n_tokens_summary_udpipe <- sapply(lista_summary_udpipe, function(x) {
   x
 })
-```
 
-Lo mostramos en histogramas los valores de titulo y summary en udpipe
-
-```{r}
 par(oma = c(0, 0, 1, 0)) # Increase the top outer margin (third value)
 layout(matrix(1:2, nrow = 1, ncol = 2))
 hist(n_tokens_titulos_udpipe,
-  breaks = seq(0, 50, 1), ylim = c(0, 3500), main = "Histograma titulo", col = "blue",
-  border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
+     breaks = seq(0, 50, 1), ylim = c(0, 3500), main = "Histograma titulo", col = "blue",
+     border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
 )
 hist(n_tokens_summary_udpipe,
-  breaks = seq(0, 180, 2), ylim = c(0, 3500), main = "Histograma summary", col = "red",
-  border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
+     breaks = seq(0, 180, 2), ylim = c(0, 3500), main = "Histograma summary", col = "red",
+     border = "white", xlab = "numero_tokens", ylab = "Frecuencia"
 )
 mtext("Resultados con udpipe", side = 3, outer = TRUE, line = -1, cex = 1.5)
-```
-Comprobación de diferencias
 
-```{r}
 max_summary <- max(n_tokens_summary)
 max_summary_udpipe <- max(n_tokens_summary_udpipe)
 
 max_titulos <- max(n_tokens_titulos)
 max_titulos_udpipe <- max(n_tokens_titulos_udpipe)
-```
-
