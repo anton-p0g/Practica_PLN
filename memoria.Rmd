@@ -1,9 +1,12 @@
 ---
-title: "Memoria de la Práctica"
+title: "Memoria de la Práctica Grupo 1"
 output: 
   pdf_document:
+    latex_engine: xelatex
     number_sections: yes
     toc: yes
+    includes:
+      before_body: grupo.tex
 date: "2024-11-29"
 ---
 
@@ -11,15 +14,7 @@ date: "2024-11-29"
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(comment = "")
 ```
-# Grupo 1:
-
-- Oliver Arnaldo Anderson Llorens - oliver.anderson@alumnos.upm.es
-- Jose Ma - jose.ma@alumnos.upm.es
-- Joaquín Daniel Negrete Saab - joaquin.negrete@alumnos.upm.es
-- Anton Pogromskyy - anton.pogromskyy@alumnos.upm.es 
-- María del Mar Sierra Gil - mdm.sierra.gil@alumnos.upm.es
-- David Gómez Martín - david.gomezm@alumnos.upm.es
-
+\newpage
 # Lista de tareas de cada uno de los integrantes y el porcentaje de contribución:
 
   - Código Parte 1: María del Mar (90%), Anton Pogromskyy (5%) y Oliver Anderson (5%)
@@ -43,7 +38,7 @@ knitr::opts_chunk$set(comment = "")
 - Para ejecutar el código se debe estar trabajando en el directorio principal
 
 # Para ejecutar el proyecto
-Primero, descargar el `.zip` de este enlace: https://drive.google.com/file/d/1FPnn2SCE76OrdVw22kuTmMZvCFvv6XeS/view?usp=sharing y descomprimirlo en el directorio principal del proyecto.
+Primero, descargar el `.zip` de este enlace: https://drive.google.com/file/d/1FPnn2SCE76OrdVw22kuTmMZvCFvv6XeS/view?usp=sharing y descomprimir el *contenido* en el directorio `datos` del directorio principal proyecto.
 Debería quedar algo así:
 
 ```plaintext
