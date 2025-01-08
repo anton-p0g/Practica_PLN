@@ -185,41 +185,6 @@ text(bar_midpoints, freq_table1,
 
 freq_table1
 
-
-# Testing function for a specific frequency of summary
-test_specific_frequency_summary <- function(freq, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids) {
-  # Find the documents with the specified frequency
-  matching_docs <- names(freq_verbs_summary[freq_verbs_summary == freq])
-  
-  # In case no documents match
-  if (length(matching_docs) == 0) {
-    cat("No documents found with frequency:", freq, "  \n")
-    return(NULL)
-  }
-  
-  # Iterate through matching documents and print details
-  cat("\n=== Testing for Frequency:", freq, "===  \n")
-  for (doc_id in matching_docs) {
-    text_verbs <- list_verbs_text[[doc_id]]
-    summary_verbs <- list_verbs_summary_unique[[doc_id]]
-    
-    # Calculate matched verbs
-    matched_summary_verbs <- intersect(text_verbs, summary_verbs)
-    matched_counts <- sapply(matched_summary_verbs, function(verb) sum(text_verbs == verb))
-    
-    # Print details for the document
-    cat("\nDocument ID:", doc_id, "\n")
-    cat("Text Verbs:\n", paste(text_verbs, collapse = ", "), "  \n\n")
-    cat("Summary Verbs:\n", paste(summary_verbs, collapse = ", "), "  \n")
-    cat("Matched Verbs (Summaries) with Counts:\n")
-    cat(paste("\t", matched_summary_verbs, "(", matched_counts, ")", collapse = ", "), "  \n")
-    cat("Matched Count (Summaries):", length(matched_summary_verbs), "  \n")
-  }
-}
-test_specific_frequency_summary(108, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids)
-test_specific_frequency_summary(43, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids)
-
-
 freq_table2 <- table(freq_verbs_titles)
 
 bar_midpoints <- barplot(freq_table2, 

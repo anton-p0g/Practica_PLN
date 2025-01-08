@@ -32,8 +32,8 @@ library(udpipe)
 
 # Test 1: Importación del corpus
 test_that("Corpus and model load without errors", {
-    expect_error(corps <- readRDS("../datos/spanish_train.qcorpus.rds"), NA)
-    expect_error(udmodel_es <- udpipe_load_model(file = "../datos/spanish-ancora-ud-2.5-191206.udpipe"), NA)
+    expect_error(corps <- readRDS("datos/spanish_train.qcorpus.rds"), NA)
+    expect_error(udmodel_es <- udpipe_load_model(file = "datos/spanish-ancora-ud-2.5-191206.udpipe"), NA)
 })
 
 

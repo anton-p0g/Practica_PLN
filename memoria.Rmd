@@ -1,6 +1,9 @@
 ---
 title: "Memoria de la Práctica"
-output: pdf_document
+output: 
+  pdf_document:
+    number_sections: yes
+    toc: yes
 date: "2024-11-29"
 ---
 
@@ -8,7 +11,7 @@ date: "2024-11-29"
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(comment = "")
 ```
-### Grupo 1:
+# Grupo 1:
 
 - Oliver Arnaldo Anderson Llorens - oliver.anderson@alumnos.upm.es
 - Jose Ma - jose.ma@alumnos.upm.es
@@ -17,22 +20,50 @@ knitr::opts_chunk$set(comment = "")
 - María del Mar Sierra Gil - mdm.sierra.gil@alumnos.upm.es
 - David Gómez Martín - david.gomezm@alumnos.upm.es
 
-### Lista de tareas de cada uno de los integrantes y el porcentaje de contribución:
-  - Código Parte 1: María del Mar (100%)
+# Lista de tareas de cada uno de los integrantes y el porcentaje de contribución:
+
+  - Código Parte 1: María del Mar (90%), Anton Pogromskyy (5%) y Oliver Anderson (5%)
   - Código Parte 2: Jose Ma (50%) y Joaquín Negrete (50%)
-  - Código Parte 3: Anton Pogromskyy (70%) y Oliver Arnaldo (30%)
+  - Código Parte 3: Anton Pogromskyy (50%) y Oliver Anderson (50%)
   
   - Pruebas Parte 2: Jose Ma (50%) y Joaquín Negrete (50%)
   - Pruebas Parte 3: Anton Pogromskyy (100%)
   
+  - Memoria Pre: Anton Pogromskyy (90%) y Joaquín Negrete (10%)
   - Memoria Parte 1: María del Mar (80%), Jose Ma (15%) y Anton Pogromskyy (5%) 
   - Memoria Parte 2: Jose Ma (50%) y Joaquín Negrete (50%)
-  - Memoria Parte 3: Anton Pogromskyy (70%) y Oliver Arnaldo (30%)
+  - Memoria Parte 3: Anton Pogromskyy (50%) y Oliver Anderson (50%)
   
-## Requisitos
-- Instalar la librería `testthat`: install.packages("testthat")
-- Instalar `udpipe`: install.packages("testthat")
+# Requisitos
+- Instalar la librería `testthat`: `install.packages("testthat")`
+- Instalar la librería `R.utils`: `install.packages("R.utils")`
+- Tener instalado `tar` para extraer el fichero tar
+- Instalar `udpipe`: `install.packages("udpipe")`
 - Instalar `spacyr` con el modelo `es_core_news_sm`
+- Para ejecutar el código se debe estar trabajando en el directorio principal
+
+# Para ejecutar el proyecto
+Primero, descargar el `.zip` de este enlace: https://drive.google.com/file/d/1FPnn2SCE76OrdVw22kuTmMZvCFvv6XeS/view?usp=sharing y descomprimirlo en el directorio principal del proyecto.
+Debería quedar algo así:
+
+```plaintext
+.
+|-- datos
+|   |-- data_frame_summary_udpipe.rds
+|   |-- ...
+|-- fuentes
+|   |-- train_analysis.R
+|   |-- train_qcorpus.R
+|   |-- train_stats.R
+|-- ...
+|-- resultados
+```
+
+Luego, se tienen que ejecutar los archivos `.R` del directorio `./fuentes` en el siguiente orden:
+1. `train_qcorpus.R`
+2. `train_stats.R`
+3. `train_analysis.R`
+
 
 # Parte 1
 ## Objetivo
@@ -55,28 +86,32 @@ Creamos un corpus y asignamos docvars y el contenido del docvar usando el conten
 Por último lo guardamos en un fichero para su posterior uso: fichero spanish_train.qcorpus.rds
 
 
-```{r include=FALSE}
-# Comprobar que está en el directorio padre del trabajo:
-getwd()
-
-# Ejecución del fichero
-setwd("fuentes")
-getwd()
-source("train_qcorpus.R")
-setwd("../")
-```
-
 Comprobamos que el corpus está correctamente creado:
 
 ```{r include=FALSE}
-corps = readRDS("datos/spanish_train.qcorpus.rds")
+corps <- readRDS("datos/spanish_train.qcorpus.rds")
 ```
 
+
+```{r include=FALSE}
+# Mostrar los nombres y los primeros 50 caracteres de los primeros 5 documentos
+head_corpus <- function(corpus, n = 5, preview_length = 50) {
+  limited_corpus <- head(corpus, n) # Limitar a los primeros n documentos
+  for (i in seq_along(limited_corpus)) {
+    doc_id <- names(limited_corpus)[i]
+    preview <- substr(limited_corpus[[i]], 1, preview_length) # Extraer los primeros preview_length caracteres
+    cat(doc_id, ":\n\"", preview, "...\"\n\n")
+  }
+}
+```
 
 ```{r}
-head(corps)
+head_corpus(corps, n = 5, preview_length = 50)
 ```
+
+
 ```{r echo=FALSE, results = "asis"}
+library(quanteda)
 docvars_names <- colnames(docvars(corps))
 cat("Las variables del corpus son:  \n", paste(docvars_names, collapse = ", "), "  \n\n")
 
@@ -157,18 +192,9 @@ Como podemos ver, ambos histogramas son casi idénticos, se pueden ver pequeñas
 Se puede ver que el número de palabras que más abundan en títulos está entre 5 y 20, mientras que en el summary están entre 10 y 40, pudiendo ver además que hay una asimetría a la derecha puesto que la mayoría de los datos se encuentran a la izquierda. 
 
 ## Prueba
-Para llevar a cabo el testing para probar la función y la limpieza de los datos. Podemos ejecutar el siguiente código para comprobar si los tests se ejecutan. 
+Para llevar a cabo el testing para probar la función y la limpieza de los datos se puede ejecutar el fichero test_2.R ubicado en el directorio pruebas. 
 
-```{r warning=FALSE}
-# Comprobar que está en el directorio padre del trabajo:
-getwd()
 
-# Ejecución del fichero
-setwd("pruebas")
-getwd()
-source("test_2.R")
-setwd("../")
-```
 Esto es el resultado comentado:
 
 Test 1: Importación del corpus
@@ -423,7 +449,7 @@ El objetivo de esta prueba es asegurar que los verbos se están contando correct
 Hacemos un test de los textos 56 - 58:
 
 ```{r, results = "asis"}
-test_freq_verbs(list_verbs_text, list_verbs_title_unique, list_verbs_summary_unique, corpus_ids)
+test_freq_verbs(list_verbs_text, list_verbs_title_unique, list_verbs_summary_unique, corpus_ids, TRUE)
 ```
 
 ---
@@ -435,15 +461,16 @@ Para analizar la cantidad de documentos que tienen cierta frecuencia de coincide
 ```{r echo=FALSE}
 freq_table1 <- table(freq_verbs_summary)
 
-bar_midpoints <- barplot(freq_table1, 
-                         main = "Frequency of Matched Verbs Between Texts and Summaries", 
-                         xlab = "Frequency", 
-                         ylab = "Number of Documents", 
-                         col = "lightblue", 
-                         border = "black",
-                         ylim = c(0, max(freq_table1) + 1500), 
-                         yaxt = "n", 
-                         xaxt = "n") # Suppress both axes
+bar_midpoints <- barplot(freq_table1,
+  main = "Frequency of Matched Verbs Between Texts and Summaries",
+  xlab = "Frequency",
+  ylab = "Number of Documents",
+  col = "lightblue",
+  border = "black",
+  ylim = c(0, max(freq_table1) + 1500),
+  yaxt = "n",
+  xaxt = "n"
+) # Suppress both axes
 
 y_max <- max(freq_table1) + 2000
 y_ticks <- seq(0, y_max, by = 2000) # y-axis subdivisions
@@ -453,14 +480,17 @@ x_labels <- as.numeric(names(freq_table1))
 axis(1, at = bar_midpoints, labels = x_labels, las = 2, cex.axis = 0.5) # Rotate labels vertically
 
 if (length(bar_midpoints) == length(x_labels)) {
-  axis(1, at = bar_midpoints[length(bar_midpoints)], 
-       labels = x_labels[length(x_labels)], las = 2, cex.axis = 0.5)
+  axis(1,
+    at = bar_midpoints[length(bar_midpoints)],
+    labels = x_labels[length(x_labels)], las = 2, cex.axis = 0.5
+  )
 }
 
 # Add labels above all bars
-text(bar_midpoints, freq_table1, 
-     labels = freq_table1, 
-     pos = 3, srt = 45, cex = 0.4, col = "black")
+text(bar_midpoints, freq_table1,
+  labels = freq_table1,
+  pos = 3, srt = 45, cex = 0.4, col = "black"
+)
 ```
 
 
@@ -468,33 +498,37 @@ Histograma para ver las frecuencias de los verbos del campo **títulos**:
 
 ```{r echo=FALSE}
 freq_table2 <- table(freq_verbs_titles)
-  
-bar_midpoints <- barplot(freq_table2, 
-                           main = "Frequency of Matched Verbs Between Texts and Titles", 
-                           xlab = "Frequency", 
-                           ylab = "Number of Documents", 
-                           col = "lightblue", 
-                           border = "black", 
-                           ylim = c(0, max(freq_table2) + 1500),
-                           yaxt = "n",
-                           xaxt = "n")
-  
-  y_max <- max(freq_table2) + 2000 # Defines the maximum y-axis value
-  y_ticks <- seq(0, y_max, by = 1500) # subdivisions
-  axis(2, at = y_ticks, labels = y_ticks, las = 1, cex.axis = 0.8)
-  
-  x_labels <- as.numeric(names(freq_table2))
-  axis(1, at = bar_midpoints, labels = x_labels, las = 2, cex.axis = 0.5) # Rotate labels vertically
-  
-  if (length(bar_midpoints) == length(x_labels)) {
-    axis(1, at = bar_midpoints[length(bar_midpoints)], 
-         labels = x_labels[length(x_labels)], las = 2, cex.axis = 0.5)
-  }
 
-  # Add labels above all bars
-  text(bar_midpoints, freq_table2, 
-       labels = freq_table2, 
-       pos = 3, srt = 45, cex = 0.4, col = "black")
+bar_midpoints <- barplot(freq_table2,
+  main = "Frequency of Matched Verbs Between Texts and Titles",
+  xlab = "Frequency",
+  ylab = "Number of Documents",
+  col = "lightblue",
+  border = "black",
+  ylim = c(0, max(freq_table2) + 1500),
+  yaxt = "n",
+  xaxt = "n"
+)
+
+y_max <- max(freq_table2) + 2000 # Defines the maximum y-axis value
+y_ticks <- seq(0, y_max, by = 1500) # subdivisions
+axis(2, at = y_ticks, labels = y_ticks, las = 1, cex.axis = 0.8)
+
+x_labels <- as.numeric(names(freq_table2))
+axis(1, at = bar_midpoints, labels = x_labels, las = 2, cex.axis = 0.5) # Rotate labels vertically
+
+if (length(bar_midpoints) == length(x_labels)) {
+  axis(1,
+    at = bar_midpoints[length(bar_midpoints)],
+    labels = x_labels[length(x_labels)], las = 2, cex.axis = 0.5
+  )
+}
+
+# Add labels above all bars
+text(bar_midpoints, freq_table2,
+  labels = freq_table2,
+  pos = 3, srt = 45, cex = 0.4, col = "black"
+)
 ```
 
 Como se puede observar hay gran cantidad de documentos que tienen frecuencia 0. Al principio esto nos pareció muy raro, pero tras realizar numerosas pruebas y verificar nuestros cálculos, hemos llegado a la conclusión de que estos son correctos. 
@@ -516,16 +550,17 @@ La función `test_specific_frequency_summary` busca documentos que tienen una fr
 
 Si no se encuentran documentos con esa frecuencia, la función informa que no hay coincidencias.
 
-Hagamos un test, por ejemplo, con frecuencia **46**, solo debe aparecer 1 documento con la suma de frecuencias de cada verbo encontrado equivalente a 46.
+Hagamos un test, por ejemplo, con frecuencia **2**, solo debe aparecer 1 documento con la suma de frecuencias de cada verbo encontrado equivalente a 2. Como hay `4189` diferentes documentos con esta frecuencia, solo se va enseñar el primero encontrado. 
+Para probar diferentes frecuencias o ver todos los documentos con una frecuencia determinada se puede ejecutar el fichero `test_train_analysis.R`. 
 
 ```{r echo=FALSE, results = "asis"}
-test_specific_frequency_summary(46, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids)
+test_specific_frequency_summary(2, freq_verbs_summary, list_verbs_text, list_verbs_summary_unique, corpus_ids, TRUE)
 ```
 
-Podemos hacer lo mismo con los **títulos**, por ejemplo, con los que tengan frecuencia **63**. Según el histograma, debe aparecer 1 documento con frecuencia 63.
+Podemos hacer lo mismo con los **títulos**, por ejemplo, con los que tengan frecuencia **1**. 
 
 ```{r echo=FALSE, results = "asis"}
-test_specific_frequency_titles(63, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids)
+test_specific_frequency_titles(1, freq_verbs_titles, list_verbs_text, list_verbs_title_unique, corpus_ids, TRUE)
 ```
 
 
